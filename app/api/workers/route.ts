@@ -31,6 +31,10 @@ export async function POST(req: NextRequest) {
     pin: hashedPin,
     hourlyRate: Number(hourlyRate),
     status: "invited",
+    balance: 0,
+    bankAccountLast4: null,
+    bankRoutingLast4: null,
+    stripeConnectAccountId: null,
   });
 
   const { pin: _, ...safe } = worker;
