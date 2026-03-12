@@ -7,7 +7,7 @@ export interface Worker {
   phone: string;
   pin: string;
   hourlyRate: number;
-  status: "active" | "inactive";
+  status: "invited" | "pending" | "active" | "inactive";
   createdAt: string;
   updatedAt: string;
 }
@@ -40,7 +40,7 @@ function rowToWorker(row: Record<string, unknown>): Worker {
     phone: row.phone as string,
     pin: row.pin as string,
     hourlyRate: Number(row.hourly_rate),
-    status: row.status as "active" | "inactive",
+    status: row.status as Worker["status"],
     createdAt: row.created_at as string,
     updatedAt: row.updated_at as string,
   };
@@ -131,7 +131,7 @@ export async function findWorkerByPin(pin: string): Promise<Worker | null> {
   const { data: rows } = await supabase
     .from("workers")
     .select()
-    .eq("status", "active");
+    .in("status", ["invited", "pending", "active"]);
 
   if (!rows) return null;
   const bcrypt = await import("bcryptjs");

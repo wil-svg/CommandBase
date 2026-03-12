@@ -28,10 +28,20 @@ export default function WorkerCard({ worker, stats, onClick }: WorkerCardProps) 
           className={
             worker.status === "active"
               ? "bg-teal-light text-teal-primary"
+              : worker.status === "invited"
+              ? "bg-purple-light text-purple-primary"
+              : worker.status === "pending"
+              ? "bg-amber-light text-amber-primary"
               : "bg-gray-100 text-gray-500"
           }
         >
-          {worker.status === "active" ? "Active" : "Inactive"}
+          {worker.status === "active"
+            ? "Active"
+            : worker.status === "invited"
+            ? "Invited"
+            : worker.status === "pending"
+            ? "Pending"
+            : "Inactive"}
         </Badge>
       </div>
       <p className="text-sm text-gray-500 font-mono">${worker.hourlyRate.toFixed(2)}/hr</p>

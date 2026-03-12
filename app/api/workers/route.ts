@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     phone: phone || "",
     pin: hashedPin,
     hourlyRate: Number(hourlyRate),
-    status: "active",
+    status: "invited",
   });
 
   const { pin: _, ...safe } = worker;

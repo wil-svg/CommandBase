@@ -111,11 +111,21 @@ export default function WorkerDetailPage() {
               <p><span className="text-gray-500">Rate:</span> <span className="font-mono">${worker.hourlyRate.toFixed(2)}/hr</span></p>
               {worker.email && <p><span className="text-gray-500">Email:</span> {worker.email}</p>}
               {worker.phone && <p><span className="text-gray-500">Phone:</span> {worker.phone}</p>}
-              <p><span className="text-gray-500">Status:</span> {worker.status}</p>
+              <p>
+                <span className="text-gray-500">Status:</span>{" "}
+                <span className={
+                  worker.status === "active" ? "text-teal-primary font-medium" :
+                  worker.status === "invited" ? "text-purple-primary font-medium" :
+                  worker.status === "pending" ? "text-amber-primary font-medium" :
+                  "text-gray-500 font-medium"
+                }>
+                  {worker.status.charAt(0).toUpperCase() + worker.status.slice(1)}
+                </span>
+              </p>
             </div>
             <div className="flex gap-2">
               <Button size="sm" variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
-              {worker.status === "active" && (
+              {(worker.status === "active" || worker.status === "invited" || worker.status === "pending") && (
                 <Button size="sm" variant="danger" onClick={handleDeactivate}>Deactivate</Button>
               )}
             </div>
