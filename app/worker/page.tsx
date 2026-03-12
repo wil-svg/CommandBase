@@ -2,11 +2,13 @@
 
 import { useEffect, useState, useCallback } from "react";
 import WorkerTaskCard from "@/components/worker/TaskCard";
+import { useToast } from "@/components/shared/Toast";
 import type { Task } from "@/lib/kv";
 
 const PRIORITY_ORDER: Record<string, number> = { urgent: 0, high: 1, medium: 2, low: 3 };
 
 export default function WorkerDashboard() {
+  const { toast } = useToast();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [tab, setTab] = useState<"active" | "completed">("active");
   const [workerName, setWorkerName] = useState("");
@@ -64,10 +66,10 @@ export default function WorkerDashboard() {
     setActionLoading(true);
     try {
       const res = await fetch(`/api/tasks/${taskId}/start`, { method: "POST" });
-      if (res.ok) load();
+      if (res.ok) { toast("Task started!"); load(); }
       else {
         const data = await res.json();
-        alert(data.error || "Failed to start task");
+        toast(data.error || "Failed to start task", "error");
       }
     } finally {
       setActionLoading(false);
@@ -78,10 +80,10 @@ export default function WorkerDashboard() {
     setActionLoading(true);
     try {
       const res = await fetch(`/api/tasks/${taskId}/pause`, { method: "POST" });
-      if (res.ok) load();
+      if (res.ok) { toast("Task paused"); load(); }
       else {
         const data = await res.json();
-        alert(data.error || "Failed to pause task");
+        toast(data.error || "Failed to pause task", "error");
       }
     } finally {
       setActionLoading(false);
@@ -102,7 +104,7 @@ export default function WorkerDashboard() {
         const h = Math.floor(mins / 60);
         const m = Math.round(mins % 60);
         const timeStr = h > 0 ? `${h}h ${m}m` : `${m}m`;
-        alert(`Task completed!\nTime: ${timeStr}\nEarned: $${completed.cost.toFixed(2)}`);
+        toast(`Task completed! Time: ${timeStr} — Earned: $${completed.cost.toFixed(2)}`);
         load();
       }
     } finally {

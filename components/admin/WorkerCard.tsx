@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Badge from "@/components/shared/Badge";
+import { useToast } from "@/components/shared/Toast";
 
 interface WorkerCardProps {
   worker: {
@@ -19,6 +20,7 @@ interface WorkerCardProps {
 }
 
 export default function WorkerCard({ worker, stats, onClick, onStatusChange }: WorkerCardProps) {
+  const { toast } = useToast();
   const [sending, setSending] = useState(false);
 
   const handleInvite = async (e: React.MouseEvent) => {
@@ -28,13 +30,13 @@ export default function WorkerCard({ worker, stats, onClick, onStatusChange }: W
       const res = await fetch(`/api/workers/${worker.id}/invite`, { method: "POST" });
       const data = await res.json();
       if (!res.ok) {
-        alert(data.error || "Failed to send invite");
+        toast(data.error || "Failed to send invite", "error");
       } else {
-        alert("Invite sent!");
+        toast("Invite sent!");
         onStatusChange?.();
       }
     } catch {
-      alert("Failed to send invite");
+      toast("Failed to send invite", "error");
     } finally {
       setSending(false);
     }

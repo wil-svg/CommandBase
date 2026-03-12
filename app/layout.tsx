@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Providers from "@/components/shared/Providers";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -28,7 +29,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
         />
       </head>
-      <body className="font-sans text-gray-900 antialiased">{children}</body>
+      <body className="font-sans text-gray-900 antialiased">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

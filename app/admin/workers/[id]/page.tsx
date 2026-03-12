@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Button from "@/components/shared/Button";
+import { useToast } from "@/components/shared/Toast";
 import StatsCards from "@/components/admin/StatsCards";
 import AdminTaskCard from "@/components/admin/TaskCard";
 import { formatCost } from "@/lib/utils";
@@ -29,6 +30,7 @@ interface Stats {
 export default function WorkerDetailPage() {
   const params = useParams();
   const router = useRouter();
+  const { toast } = useToast();
   const [worker, setWorker] = useState<Worker | null>(null);
   const [stats, setStats] = useState<Stats | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -61,6 +63,7 @@ export default function WorkerDetailPage() {
       const updated = await res.json();
       setWorker(updated);
       setEditing(false);
+      toast("Worker updated");
     }
   };
 
@@ -70,11 +73,11 @@ export default function WorkerDetailPage() {
       const res = await fetch(`/api/workers/${params.id}/invite`, { method: "POST" });
       const data = await res.json();
       if (res.ok) {
-        alert("Invite sent!");
+        toast("Invite sent!");
         const updated = await fetch(`/api/workers/${params.id}`).then((r) => r.json());
         setWorker(updated);
       } else {
-        alert(data.error || "Failed to send invite");
+        toast(data.error || "Failed to send invite", "error");
       }
     } finally {
       setInviting(false);
