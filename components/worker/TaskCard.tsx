@@ -61,7 +61,7 @@ export default function WorkerTaskCard({ task, onStart, onComplete, hasInProgres
               onClick={() => setExpanded(!expanded)}
               className="text-xs text-purple-primary hover:underline"
             >
-              {expanded ? "Hide details" : "Show details"}
+              {expanded ? "Hide Instructions" : "View Instructions"}
             </button>
             {expanded && (
               <p className="text-sm text-gray-600 mt-1">{task.description}</p>
