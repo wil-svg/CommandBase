@@ -1,11 +1,15 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen relative flex items-center justify-center p-4">
+      <div className="absolute top-4 left-4">
+        <Image src="/logo.png" alt="Cochrane Realty" width={160} height={48} priority />
+      </div>
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
-          <h1 className="text-2xl font-semibold text-gray-900">Cochrane Realty</h1>
+          <h1 className="text-2xl font-semibold text-gray-900">CommandBase</h1>
           <p className="text-sm text-gray-500 mt-1">Task Manager</p>
         </div>
         <div className="space-y-3">

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import Button from "@/components/shared/Button";
 
 export default function WorkerLogin() {
@@ -33,10 +34,13 @@ export default function WorkerLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
+    <div className="min-h-screen relative flex items-center justify-center p-4">
+      <div className="absolute top-4 left-4">
+        <Image src="/logo.png" alt="Cochrane Realty" width={160} height={48} priority />
+      </div>
       <div className="bg-white rounded-card shadow-sm border border-gray-100 p-8 w-full max-w-sm">
         <h1 className="text-xl font-semibold text-gray-900 text-center mb-1">
-          Cochrane Realty
+          CommandBase
         </h1>
         <p className="text-sm text-gray-500 text-center mb-6">Worker Login</p>
         <form onSubmit={handleSubmit} className="space-y-4">
