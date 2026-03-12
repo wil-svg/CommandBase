@@ -63,14 +63,17 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-card border border-gray-100 divide-y divide-gray-50">
             {recentCompleted.map((task) => (
               <div key={task.id} className="px-4 py-3 flex items-center justify-between">
-                <div>
+                <div className="min-w-0 flex-1 mr-4">
                   <p className="text-sm font-medium text-gray-900">{task.title}</p>
                   <p className="text-xs text-gray-500">
                     {workerMap[task.assignedTo] || "Unknown"} &middot;{" "}
                     {task.completedAt ? formatDateTime(task.completedAt) : ""}
                   </p>
+                  {task.notes && (
+                    <p className="text-xs text-gray-500 mt-1 italic truncate">{task.notes}</p>
+                  )}
                 </div>
-                <div className="text-right">
+                <div className="text-right shrink-0">
                   <p className="text-sm font-mono text-gray-700">{formatTime(task.timeSpentMinutes)}</p>
                   <p className="text-xs font-mono text-gray-500">{formatCost(task.cost)}</p>
                 </div>
