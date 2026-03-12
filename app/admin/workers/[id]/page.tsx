@@ -33,6 +33,7 @@ export default function WorkerDetailPage() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
   const [editing, setEditing] = useState(false);
+  const [inviting, setInviting] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "", hourlyRate: "" });
 
   useEffect(() => {
@@ -60,6 +61,23 @@ export default function WorkerDetailPage() {
       const updated = await res.json();
       setWorker(updated);
       setEditing(false);
+    }
+  };
+
+  const handleInvite = async () => {
+    setInviting(true);
+    try {
+      const res = await fetch(`/api/workers/${params.id}/invite`, { method: "POST" });
+      const data = await res.json();
+      if (res.ok) {
+        alert("Invite sent!");
+        const updated = await fetch(`/api/workers/${params.id}`).then((r) => r.json());
+        setWorker(updated);
+      } else {
+        alert(data.error || "Failed to send invite");
+      }
+    } finally {
+      setInviting(false);
     }
   };
 
@@ -124,6 +142,11 @@ export default function WorkerDetailPage() {
               </p>
             </div>
             <div className="flex gap-2">
+              {(worker.status === "invited" || worker.status === "pending") && (
+                <Button size="sm" onClick={handleInvite} disabled={inviting}>
+                  {inviting ? "Sending..." : worker.status === "invited" ? "Send Invite" : "Resend Invite"}
+                </Button>
+              )}
               <Button size="sm" variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
               {(worker.status === "active" || worker.status === "invited" || worker.status === "pending") && (
                 <Button size="sm" variant="danger" onClick={handleDeactivate}>Deactivate</Button>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Badge from "@/components/shared/Badge";
 
 interface WorkerCardProps {
@@ -14,9 +15,31 @@ interface WorkerCardProps {
     hoursMonth: number;
   };
   onClick?: () => void;
+  onStatusChange?: () => void;
 }
 
-export default function WorkerCard({ worker, stats, onClick }: WorkerCardProps) {
+export default function WorkerCard({ worker, stats, onClick, onStatusChange }: WorkerCardProps) {
+  const [sending, setSending] = useState(false);
+
+  const handleInvite = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setSending(true);
+    try {
+      const res = await fetch(`/api/workers/${worker.id}/invite`, { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to send invite");
+      } else {
+        alert("Invite sent!");
+        onStatusChange?.();
+      }
+    } catch {
+      alert("Failed to send invite");
+    } finally {
+      setSending(false);
+    }
+  };
+
   return (
     <div
       onClick={onClick}
@@ -24,25 +47,36 @@ export default function WorkerCard({ worker, stats, onClick }: WorkerCardProps) 
     >
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-medium text-gray-900">{worker.name}</h3>
-        <Badge
-          className={
-            worker.status === "active"
-              ? "bg-teal-light text-teal-primary"
+        <div className="flex items-center gap-2">
+          {(worker.status === "invited" || worker.status === "pending") && (
+            <button
+              onClick={handleInvite}
+              disabled={sending}
+              className="text-xs font-medium px-2 py-1 rounded-card bg-purple-primary text-white hover:opacity-90 transition-opacity disabled:opacity-50"
+            >
+              {sending ? "Sending..." : worker.status === "invited" ? "Send Invite" : "Resend"}
+            </button>
+          )}
+          <Badge
+            className={
+              worker.status === "active"
+                ? "bg-teal-light text-teal-primary"
+                : worker.status === "invited"
+                ? "bg-purple-light text-purple-primary"
+                : worker.status === "pending"
+                ? "bg-amber-light text-amber-primary"
+                : "bg-gray-100 text-gray-500"
+            }
+          >
+            {worker.status === "active"
+              ? "Active"
               : worker.status === "invited"
-              ? "bg-purple-light text-purple-primary"
+              ? "Invited"
               : worker.status === "pending"
-              ? "bg-amber-light text-amber-primary"
-              : "bg-gray-100 text-gray-500"
-          }
-        >
-          {worker.status === "active"
-            ? "Active"
-            : worker.status === "invited"
-            ? "Invited"
-            : worker.status === "pending"
-            ? "Pending"
-            : "Inactive"}
-        </Badge>
+              ? "Pending"
+              : "Inactive"}
+          </Badge>
+        </div>
       </div>
       <p className="text-sm text-gray-500 font-mono">${worker.hourlyRate.toFixed(2)}/hr</p>
       {stats && (

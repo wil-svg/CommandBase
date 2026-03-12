@@ -70,6 +70,7 @@ export default function WorkersPage() {
               worker={w}
               stats={stats[w.id]}
               onClick={() => router.push(`/admin/workers/${w.id}`)}
+              onStatusChange={load}
             />
           ))}
         </div>
