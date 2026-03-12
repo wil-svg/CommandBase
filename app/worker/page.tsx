@@ -39,10 +39,12 @@ export default function WorkerDashboard() {
   }, [load]);
 
   const activeTasks = tasks
-    .filter((t) => t.status === "pending" || t.status === "in_progress")
+    .filter((t) => t.status === "pending" || t.status === "in_progress" || t.status === "paused")
     .sort((a, b) => {
-      if (a.status === "in_progress" && b.status !== "in_progress") return -1;
-      if (b.status === "in_progress" && a.status !== "in_progress") return 1;
+      const statusOrder: Record<string, number> = { in_progress: 0, paused: 1, pending: 2 };
+      const sa = statusOrder[a.status] ?? 3;
+      const sb = statusOrder[b.status] ?? 3;
+      if (sa !== sb) return sa - sb;
       const pa = PRIORITY_ORDER[a.priority] ?? 4;
       const pb = PRIORITY_ORDER[b.priority] ?? 4;
       if (pa !== pb) return pa - pb;
@@ -66,6 +68,20 @@ export default function WorkerDashboard() {
       else {
         const data = await res.json();
         alert(data.error || "Failed to start task");
+      }
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
+  const handlePause = async (taskId: string) => {
+    setActionLoading(true);
+    try {
+      const res = await fetch(`/api/tasks/${taskId}/pause`, { method: "POST" });
+      if (res.ok) load();
+      else {
+        const data = await res.json();
+        alert(data.error || "Failed to pause task");
       }
     } finally {
       setActionLoading(false);
@@ -133,6 +149,7 @@ export default function WorkerDashboard() {
               key={t.id}
               task={t}
               onStart={handleStart}
+              onPause={handlePause}
               onComplete={handleComplete}
               hasInProgress={hasInProgress}
               loading={actionLoading}

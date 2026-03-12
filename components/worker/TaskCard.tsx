@@ -12,12 +12,13 @@ import type { Task } from "@/lib/kv";
 interface WorkerTaskCardProps {
   task: Task;
   onStart: (taskId: string) => void;
+  onPause: (taskId: string) => void;
   onComplete: (taskId: string, notes: string) => void;
   hasInProgress: boolean;
   loading?: boolean;
 }
 
-export default function WorkerTaskCard({ task, onStart, onComplete, hasInProgress, loading }: WorkerTaskCardProps) {
+export default function WorkerTaskCard({ task, onStart, onPause, onComplete, hasInProgress, loading }: WorkerTaskCardProps) {
   const [expanded, setExpanded] = useState(false);
   const [showComplete, setShowComplete] = useState(false);
 
@@ -84,16 +85,44 @@ export default function WorkerTaskCard({ task, onStart, onComplete, hasInProgres
         {task.status === "in_progress" && (
           <div className="space-y-3">
             <div className="flex justify-center py-2">
-              <Timer startedAt={task.startedAt!} />
+              <Timer startedAt={task.startedAt!} offsetMinutes={task.timeSpentMinutes || 0} />
             </div>
+            <div className="flex gap-2">
+              <Button
+                variant="secondary"
+                size="lg"
+                className="flex-1"
+                onClick={() => onPause(task.id)}
+                disabled={loading}
+              >
+                Pause Task
+              </Button>
+              <Button
+                variant="success"
+                size="lg"
+                className="flex-1"
+                onClick={() => setShowComplete(true)}
+                disabled={loading}
+              >
+                Complete Task
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {task.status === "paused" && (
+          <div className="space-y-3">
+            <p className="text-center text-sm text-amber-primary font-medium">
+              Paused — {formatTime(task.timeSpentMinutes)} logged
+            </p>
             <Button
-              variant="success"
+              variant="primary"
               size="lg"
               className="w-full"
-              onClick={() => setShowComplete(true)}
-              disabled={loading}
+              onClick={() => onStart(task.id)}
+              disabled={loading || hasInProgress}
             >
-              Complete Task
+              {hasInProgress ? "Complete current task first" : "Resume Task"}
             </Button>
           </div>
         )}

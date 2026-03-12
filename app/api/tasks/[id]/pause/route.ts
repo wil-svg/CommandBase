@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireWorker } from "@/lib/auth";
-import { getTask, updateTask, getWorkerTasks } from "@/lib/kv";
+import { getTask, updateTask } from "@/lib/kv";
 
 export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
   const session = await requireWorker();
@@ -11,23 +11,18 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   if (task.assignedTo !== session.workerId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
-  if (task.status !== "pending" && task.status !== "paused") {
-    return NextResponse.json({ error: "Task cannot be started" }, { status: 400 });
+  if (task.status !== "in_progress") {
+    return NextResponse.json({ error: "Task is not in progress" }, { status: 400 });
   }
 
-  // Check no other task is in progress
-  const workerTasks = await getWorkerTasks(session.workerId!);
-  const inProgress = workerTasks.find((t) => t.status === "in_progress");
-  if (inProgress) {
-    return NextResponse.json(
-      { error: "You already have a task in progress. Complete it first.", taskId: inProgress.id },
-      { status: 409 }
-    );
-  }
+  // Calculate elapsed time for this session and add to accumulated time
+  const sessionMinutes = (Date.now() - new Date(task.startedAt!).getTime()) / 1000 / 60;
+  const totalMinutes = (task.timeSpentMinutes || 0) + sessionMinutes;
 
   const updated = await updateTask(params.id, {
-    status: "in_progress",
-    startedAt: new Date().toISOString(),
+    status: "paused",
+    timeSpentMinutes: Math.round(totalMinutes * 100) / 100,
+    startedAt: null,
   });
 
   return NextResponse.json(updated);

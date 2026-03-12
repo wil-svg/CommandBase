@@ -21,7 +21,7 @@ export interface Task {
   priority: "low" | "medium" | "high" | "urgent";
   dueDate: string | null;
   assignedTo: string;
-  status: "pending" | "in_progress" | "completed" | "cancelled";
+  status: "pending" | "in_progress" | "paused" | "completed" | "cancelled";
   createdAt: string;
   createdBy: string;
   startedAt: string | null;

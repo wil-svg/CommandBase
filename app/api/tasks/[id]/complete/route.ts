@@ -17,8 +17,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   const body = await req.json().catch(() => ({}));
   const completedAt = new Date().toISOString();
-  const startedAt = new Date(task.startedAt!);
-  const timeSpentMinutes = (new Date(completedAt).getTime() - startedAt.getTime()) / 1000 / 60;
+  const sessionMinutes = task.startedAt
+    ? (new Date(completedAt).getTime() - new Date(task.startedAt).getTime()) / 1000 / 60
+    : 0;
+  const timeSpentMinutes = (task.timeSpentMinutes || 0) + sessionMinutes;
 
   const worker = await getWorker(session.workerId!);
   const cost = (timeSpentMinutes / 60) * (worker?.hourlyRate || 0);
