@@ -1,6 +1,5 @@
 import { cookies } from "next/headers";
-import { kv } from "@vercel/kv";
-import { v4 as uuid } from "uuid";
+import { supabase } from "./supabase";
 
 export interface Session {
   role: "admin" | "worker";
@@ -8,18 +7,37 @@ export interface Session {
 }
 
 export async function createSession(session: Session): Promise<string> {
-  const token = uuid();
-  await kv.set(`session:${token}`, JSON.stringify(session), { ex: 60 * 60 * 24 * 7 });
-  return token;
+  const { data, error } = await supabase
+    .from("sessions")
+    .insert({
+      role: session.role,
+      worker_id: session.workerId || null,
+    })
+    .select("token")
+    .single();
+
+  if (error || !data) throw new Error("Failed to create session");
+  return data.token;
 }
 
 export async function getSession(): Promise<Session | null> {
   const cookieStore = cookies();
   const token = cookieStore.get("session")?.value;
   if (!token) return null;
-  const data = await kv.get<string>(`session:${token}`);
-  if (!data) return null;
-  return typeof data === "string" ? JSON.parse(data) : data;
+
+  const { data, error } = await supabase
+    .from("sessions")
+    .select("role, worker_id, expires_at")
+    .eq("token", token)
+    .single();
+
+  if (error || !data) return null;
+  if (new Date(data.expires_at) < new Date()) return null;
+
+  return {
+    role: data.role,
+    workerId: data.worker_id || undefined,
+  };
 }
 
 export async function requireAdmin(): Promise<boolean> {
