@@ -57,6 +57,9 @@ export default function AdminLogin() {
             {loading ? "Signing in..." : "Sign In"}
           </Button>
         </form>
+        <p className="text-center mt-4 text-sm text-gray-400">
+          <a href="/worker/login" className="text-purple-primary hover:underline">Worker login</a>
+        </p>
       </div>
     </div>
   );

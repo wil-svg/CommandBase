@@ -35,6 +35,9 @@ export default function WorkerLogin() {
       <h1 className="text-xl font-semibold text-gray-900 mb-1">Cochrane Realty</h1>
       <p className="text-sm text-gray-500 mb-8">Enter your PIN to sign in</p>
       <PinPad onSubmit={handleSubmit} loading={loading} error={error} />
+      <p className="text-center mt-6 text-sm text-gray-400">
+        <a href="/admin/login" className="text-purple-primary hover:underline">Admin login</a>
+      </p>
     </div>
   );
 }
