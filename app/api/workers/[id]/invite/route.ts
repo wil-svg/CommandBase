@@ -13,9 +13,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   const accountSid = process.env.TWILIO_ACCOUNT_SID;
   const authToken = process.env.TWILIO_AUTH_TOKEN;
+  const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID;
   const fromNumber = process.env.TWILIO_PHONE_NUMBER;
 
-  if (!accountSid || !authToken || !fromNumber) {
+  if (!accountSid || !authToken || (!messagingServiceSid && !fromNumber)) {
     return NextResponse.json({ error: "SMS service not configured" }, { status: 500 });
   }
 
@@ -24,8 +25,10 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   try {
     await client.messages.create({
-      body: `You've been invited to Cochrane Realty Task Manager. Tap the link to get started: ${appUrl}/worker/login`,
-      from: fromNumber,
+      body: `You've been invited to Cochrane Realty Task Manager. Tap the link to get started: ${appUrl}/worker/login Reply STOP to opt out.`,
+      ...(messagingServiceSid
+        ? { messagingServiceSid }
+        : { from: fromNumber }),
       to: worker.phone,
     });
 
