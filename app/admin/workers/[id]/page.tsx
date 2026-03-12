@@ -81,12 +81,39 @@ export default function WorkerDetailPage() {
     }
   };
 
-  const handleDeactivate = async () => {
+  const handleArchive = async () => {
+    if (!confirm("Archive this worker? They will be hidden from the main list and cannot be assigned tasks.")) return;
+    const res = await fetch(`/api/workers/${params.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "archived" }),
+    });
+    if (res.ok) router.push("/admin/workers");
+  };
+
+  const handleRestore = async () => {
+    const res = await fetch(`/api/workers/${params.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "active" }),
+    });
+    if (res.ok) {
+      const updated = await res.json();
+      setWorker(updated);
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!confirm("Permanently delete this worker? This cannot be undone.")) return;
     await fetch(`/api/workers/${params.id}`, { method: "DELETE" });
     router.push("/admin/workers");
   };
 
   if (!worker) return <div className="text-center py-12 text-gray-400">Loading...</div>;
+
+  const isArchived = worker.status === "archived";
+  const canInvite = worker.status === "invited" || worker.status === "pending";
+  const canArchive = ["active", "invited", "pending", "inactive"].includes(worker.status);
 
   return (
     <div className="space-y-6">
@@ -135,6 +162,7 @@ export default function WorkerDetailPage() {
                   worker.status === "active" ? "text-teal-primary font-medium" :
                   worker.status === "invited" ? "text-purple-primary font-medium" :
                   worker.status === "pending" ? "text-amber-primary font-medium" :
+                  worker.status === "archived" ? "text-gray-400 font-medium" :
                   "text-gray-500 font-medium"
                 }>
                   {worker.status.charAt(0).toUpperCase() + worker.status.slice(1)}
@@ -142,15 +170,21 @@ export default function WorkerDetailPage() {
               </p>
             </div>
             <div className="flex gap-2">
-              {(worker.status === "invited" || worker.status === "pending") && (
+              {canInvite && (
                 <Button size="sm" onClick={handleInvite} disabled={inviting}>
                   {inviting ? "Sending..." : worker.status === "invited" ? "Send Invite" : "Resend Invite"}
                 </Button>
               )}
-              <Button size="sm" variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
-              {(worker.status === "active" || worker.status === "invited" || worker.status === "pending") && (
-                <Button size="sm" variant="danger" onClick={handleDeactivate}>Deactivate</Button>
+              {!isArchived && (
+                <Button size="sm" variant="secondary" onClick={() => setEditing(true)}>Edit</Button>
               )}
+              {isArchived && (
+                <Button size="sm" variant="secondary" onClick={handleRestore}>Restore</Button>
+              )}
+              {canArchive && (
+                <Button size="sm" variant="danger" onClick={handleArchive}>Archive</Button>
+              )}
+              <Button size="sm" variant="danger" onClick={handleDelete}>Delete</Button>
             </div>
           </div>
         )}

@@ -24,11 +24,12 @@ export default function WorkersPage() {
   const [workers, setWorkers] = useState<Worker[]>([]);
   const [stats, setStats] = useState<Record<string, WorkerStats>>({});
   const [showCreate, setShowCreate] = useState(false);
+  const [showArchived, setShowArchived] = useState(false);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
   const load = () => {
-    fetch("/api/workers")
+    fetch("/api/workers?include=all")
       .then((r) => r.json())
       .then(async (data: Worker[]) => {
         if (!Array.isArray(data)) return;
@@ -47,6 +48,9 @@ export default function WorkersPage() {
 
   useEffect(() => { load(); }, []);
 
+  const activeWorkers = workers.filter((w) => w.status !== "archived");
+  const archivedWorkers = workers.filter((w) => w.status === "archived");
+
   if (loading) {
     return <div className="text-center py-12 text-gray-400">Loading...</div>;
   }
@@ -58,13 +62,13 @@ export default function WorkersPage() {
         <Button onClick={() => setShowCreate(true)}>Add Worker</Button>
       </div>
 
-      {workers.length === 0 ? (
+      {activeWorkers.length === 0 ? (
         <p className="text-sm text-gray-400 bg-white rounded-card p-6 text-center">
           No workers yet. Add your first contractor.
         </p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {workers.map((w) => (
+          {activeWorkers.map((w) => (
             <WorkerCard
               key={w.id}
               worker={w}
@@ -73,6 +77,30 @@ export default function WorkersPage() {
               onStatusChange={load}
             />
           ))}
+        </div>
+      )}
+
+      {archivedWorkers.length > 0 && (
+        <div>
+          <button
+            onClick={() => setShowArchived(!showArchived)}
+            className="text-sm text-gray-500 hover:text-gray-700 font-medium"
+          >
+            {showArchived ? "Hide" : "Show"} Archived Workers ({archivedWorkers.length})
+          </button>
+          {showArchived && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-3">
+              {archivedWorkers.map((w) => (
+                <WorkerCard
+                  key={w.id}
+                  worker={w}
+                  stats={stats[w.id]}
+                  onClick={() => router.push(`/admin/workers/${w.id}`)}
+                  onStatusChange={load}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
 

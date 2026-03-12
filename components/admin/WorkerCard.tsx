@@ -74,6 +74,8 @@ export default function WorkerCard({ worker, stats, onClick, onStatusChange }: W
               ? "Invited"
               : worker.status === "pending"
               ? "Pending"
+              : worker.status === "archived"
+              ? "Archived"
               : "Inactive"}
           </Badge>
         </div>

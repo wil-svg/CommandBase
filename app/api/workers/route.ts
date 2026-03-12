@@ -3,12 +3,14 @@ import { requireAdmin } from "@/lib/auth";
 import { createWorker, getAllWorkers } from "@/lib/kv";
 import bcrypt from "bcryptjs";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const isAdmin = await requireAdmin();
   if (!isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
+  const includeAll = req.nextUrl.searchParams.get("include") === "all";
   const workers = await getAllWorkers();
-  const safe = workers.map(({ pin, ...rest }) => rest);
+  const filtered = includeAll ? workers : workers.filter((w) => w.status !== "archived");
+  const safe = filtered.map(({ pin, ...rest }) => rest);
   return NextResponse.json(safe);
 }
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/auth";
-import { getWorker, updateWorker } from "@/lib/kv";
+import { getWorker, updateWorker, deleteWorker } from "@/lib/kv";
 import bcrypt from "bcryptjs";
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
@@ -39,8 +39,8 @@ export async function DELETE(req: NextRequest, { params }: { params: { id: strin
   const isAdmin = await requireAdmin();
   if (!isAdmin) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const worker = await updateWorker(params.id, { status: "inactive" });
-  if (!worker) return NextResponse.json({ error: "Not found" }, { status: 404 });
+  const success = await deleteWorker(params.id);
+  if (!success) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
   return NextResponse.json({ success: true });
 }

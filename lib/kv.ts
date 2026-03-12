@@ -7,7 +7,7 @@ export interface Worker {
   phone: string;
   pin: string;
   hourlyRate: number;
-  status: "invited" | "pending" | "active" | "inactive";
+  status: "invited" | "pending" | "active" | "inactive" | "archived";
   balance: number;
   bankAccountLast4: string | null;
   bankRoutingLast4: string | null;
@@ -203,6 +203,15 @@ export async function updateWorker(id: string, data: Partial<Worker>): Promise<W
 
   if (error || !row) return null;
   return rowToWorker(row);
+}
+
+export async function deleteWorker(id: string): Promise<boolean> {
+  const { error } = await supabase
+    .from("workers")
+    .delete()
+    .eq("id", id);
+
+  return !error;
 }
 
 export async function findWorkerByPin(pin: string): Promise<Worker | null> {
