@@ -2,14 +2,16 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import PinPad from "@/components/worker/PinPad";
+import Button from "@/components/shared/Button";
 
 export default function WorkerLogin() {
+  const [pin, setPin] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  const handleSubmit = async (pin: string) => {
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     setError("");
     setLoading(true);
     try {
@@ -31,13 +33,34 @@ export default function WorkerLogin() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-6">
-      <h1 className="text-xl font-semibold text-gray-900 mb-1">Cochrane Realty</h1>
-      <p className="text-sm text-gray-500 mb-8">Enter your PIN to sign in</p>
-      <PinPad onSubmit={handleSubmit} loading={loading} error={error} />
-      <p className="text-center mt-6 text-sm text-gray-400">
-        <a href="/admin/login" className="text-purple-primary hover:underline">Admin login</a>
-      </p>
+    <div className="min-h-screen flex items-center justify-center p-4">
+      <div className="bg-white rounded-card shadow-sm border border-gray-100 p-8 w-full max-w-sm">
+        <h1 className="text-xl font-semibold text-gray-900 text-center mb-1">
+          Cochrane Realty
+        </h1>
+        <p className="text-sm text-gray-500 text-center mb-6">Worker Login</p>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {error && (
+            <p className="text-sm text-coral-primary bg-coral-light p-2 rounded-card text-center">
+              {error}
+            </p>
+          )}
+          <input
+            type="password"
+            value={pin}
+            onChange={(e) => setPin(e.target.value)}
+            placeholder="Enter your PIN"
+            className="w-full border border-gray-200 rounded-card px-4 py-3 text-center font-mono tracking-widest text-lg"
+            autoFocus
+          />
+          <Button type="submit" className="w-full" size="lg" disabled={loading || !pin}>
+            {loading ? "Signing in..." : "Sign In"}
+          </Button>
+        </form>
+        <p className="text-center mt-4 text-sm text-gray-400">
+          <a href="/admin/login" className="text-purple-primary hover:underline">Admin login</a>
+        </p>
+      </div>
     </div>
   );
 }
