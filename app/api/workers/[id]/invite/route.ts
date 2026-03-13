@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
   }
 
   const client = twilio(accountSid, authToken);
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://command-base.vercel.app";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://cr-commandbase.com";
 
   try {
     await client.messages.create({

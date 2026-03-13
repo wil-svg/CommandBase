@@ -59,7 +59,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
         const authToken = process.env.TWILIO_AUTH_TOKEN;
         const messagingServiceSid = process.env.TWILIO_MESSAGING_SERVICE_SID;
         const fromNumber = process.env.TWILIO_PHONE_NUMBER;
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://command-base.vercel.app";
+        const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://cr-commandbase.com";
 
         if (accountSid && authToken && (messagingServiceSid || fromNumber)) {
           const twilio = (await import("twilio")).default;
