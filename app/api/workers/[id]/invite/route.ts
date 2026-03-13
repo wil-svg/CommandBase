@@ -25,7 +25,7 @@ export async function POST(req: NextRequest, { params }: { params: { id: string 
 
   try {
     await client.messages.create({
-      body: `You've been invited to Cochrane Realty Task Manager. Tap the link to get started: ${appUrl}/worker/login Reply STOP to opt out.`,
+      body: `You've been invited to CommandBase Task Manager. Tap to install the app and get started: ${appUrl}/install Reply STOP to opt out.`,
       ...(messagingServiceSid
         ? { messagingServiceSid }
         : { from: fromNumber }),
