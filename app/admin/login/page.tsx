@@ -35,8 +35,8 @@ export default function AdminLogin() {
 
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
-      <div className="absolute top-4 left-4">
-        <Image src="/logo.png" alt="Cochrane Realty" width={160} height={48} priority />
+      <div className="absolute top-3 left-3 sm:top-4 sm:left-4">
+        <Image src="/logo.png" alt="Cochrane Realty" width={160} height={48} priority className="w-28 sm:w-40 h-auto" />
       </div>
       <div className="bg-white rounded-card shadow-sm border border-gray-100 p-8 w-full max-w-sm">
         <h1 className="text-xl font-semibold text-gray-900 text-center mb-1">

@@ -79,7 +79,7 @@ export default function PaymentReviewPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-card p-6 shadow-sm border border-gray-100 space-y-4">
+      <div className="bg-white rounded-card p-4 sm:p-6 shadow-sm border border-gray-100 space-y-4">
         <div>
           <p className="text-xs text-gray-500">Task</p>
           <p className="text-sm font-medium text-gray-900">{task?.title || "Unknown task"}</p>

@@ -75,9 +75,9 @@ export default function AdminSettingsPage() {
     <div className="space-y-6 max-w-2xl">
       <h2 className="text-lg font-semibold text-gray-900">Settings</h2>
 
-      <div className="bg-white rounded-card p-6 shadow-sm border border-gray-100 space-y-4">
+      <div className="bg-white rounded-card p-4 sm:p-6 shadow-sm border border-gray-100 space-y-4">
         <h3 className="text-sm font-medium text-gray-700">Admin Profile</h3>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
           <div>
             <label className="block text-xs text-gray-500 mb-1">Name</label>
             <input
@@ -118,7 +118,7 @@ export default function AdminSettingsPage() {
               placeholder="Apt, suite, etc."
             />
           </div>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-3 gap-2 sm:gap-3">
             <div>
               <label className="block text-xs text-gray-500 mb-1">City</label>
               <input
@@ -157,7 +157,7 @@ export default function AdminSettingsPage() {
         </div>
       </div>
 
-      <div className="bg-white rounded-card p-6 shadow-sm border border-gray-100 space-y-4">
+      <div className="bg-white rounded-card p-4 sm:p-6 shadow-sm border border-gray-100 space-y-4">
         <h3 className="text-sm font-medium text-gray-700">Payment Method</h3>
         <p className="text-xs text-gray-500">
           Add a credit or debit card to pay workers when you approve completed tasks.

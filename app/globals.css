@@ -5,3 +5,8 @@
 body {
   background-color: #F5F3ED;
 }
+
+/* Safe area for bottom tab bar on notched iPhones */
+.safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}

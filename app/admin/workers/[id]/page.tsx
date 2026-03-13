@@ -130,7 +130,7 @@ export default function WorkerDetailPage() {
       <div className="bg-white rounded-card p-4 shadow-sm border border-gray-100">
         {editing ? (
           <div className="space-y-3">
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
                 <label className="block text-xs text-gray-500 mb-1">Name</label>
                 <input value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="w-full border rounded-card px-3 py-2 text-sm" />
@@ -154,7 +154,7 @@ export default function WorkerDetailPage() {
             </div>
           </div>
         ) : (
-          <div className="flex items-start justify-between">
+          <div className="space-y-3">
             <div className="space-y-1 text-sm">
               <p><span className="text-gray-500">Rate:</span> <span className="font-mono">${worker.hourlyRate.toFixed(2)}/hr</span></p>
               {worker.email && <p><span className="text-gray-500">Email:</span> {worker.email}</p>}
@@ -172,7 +172,7 @@ export default function WorkerDetailPage() {
                 </span>
               </p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {canInvite && (
                 <Button size="sm" onClick={handleInvite} disabled={inviting}>
                   {inviting ? "Sending..." : worker.status === "invited" ? "Send Invite" : "Resend Invite"}

@@ -19,7 +19,7 @@ export default function FilterBar({ filters, workers, onChange }: FilterBarProps
   };
 
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3">
       <select
         value={filters.status}
         onChange={(e) => update("status", e.target.value)}
