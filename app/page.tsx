@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="min-h-screen relative flex items-center justify-center p-4">
       <div className="absolute top-4 left-4">
-        <Image src="/logo.png" alt="Cochrane Realty" width={160} height={48} priority />
+        <Image src="/logo.png" alt="Cochrane Realty" width={120} height={69} priority />
       </div>
       <div className="w-full max-w-sm space-y-6">
         <div className="text-center">
